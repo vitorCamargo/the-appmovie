@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 
 import axios from 'axios';
+import Header from '../../components/header';
 
 import './index.css';
 
@@ -65,15 +66,13 @@ function Home() {
   return (
     !moviesStreaming.loading ? (
       <>
-        <header class = "header">
-          mmmmm
-        </header>
+        <Header />
 
-        <div style = {{ height: '100vh', background: `url(${BASE_IMG_URL + currentMovie.backdrop_path})` }}>
+        <div style = {{ height: '100vh', backgroundPosition: 'center', backgroundSize: 'cover', background: `linear-gradient(90.07deg, rgba(0, 0, 0, 0.82) 7.34%, rgba(0, 0, 0, 0) 89.46%), url(${BASE_IMG_URL + currentMovie.backdrop_path})` }}>
           { currentMovie.title }
         </div>
 
-        <div>kkkkkkkkkkkkkkk</div>
+        <div style = {{ height: 1000 }}>kkkkkkkkkkkkkkk</div>
       </>
     ) : (
       <div />

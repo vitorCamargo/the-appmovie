@@ -16,9 +16,11 @@ const LANGUAGE = 'pt-BR';
 const REGION = 'BR';
 
 function Home() {
+  const searchArea = React.createRef();
+
   const [nav, setNav] = useState('');
+  const [moviesSearched, setMoviesSearched] = useState([]);
   const [searchBar, setSearchBar] = useState({
-    movies: [],
     text: '',
     visible: false
   });
@@ -92,20 +94,14 @@ function Home() {
   useEffect(() => {
     axios.get(`https://api.themoviedb.org/3/movie/top_rated?${filterYear.value === 0 ? '' : 'primary_release_year=' + filterYear.value + '&'}api_key=${API_KEY}&language=${LANGUAGE}&region=${REGION}`).then((res) => {
       let movies = res.data.results.sort((a, b) => (b.vote_count - a.vote_count));
-      console.log(movies);
 
       movies.forEach((movie, index) => {
         axios.get(`https://api.themoviedb.org/3/movie/${movie.id}?api_key=${API_KEY}&language=${LANGUAGE}&region=${REGION}`).then((resMovie) => {
           movies[index] = resMovie.data;
-          movies[index].video = null;
-
-          axios.get(`https://api.themoviedb.org/3/movie/${movie.id}/videos?type='Trailer'&api_key=${API_KEY}&language=${LANGUAGE}&region=${REGION}`).then((resVideo) => {
-            movies[index].video = resVideo.data.results.length > 0 ? resVideo.data.results[0] : null;
-            setMoviesFiltered({
-              ...moviesFiltered,
-              movies: movies,
-              loading: false
-            });
+          setMoviesFiltered({
+            ...moviesFiltered,
+            movies: movies,
+            loading: false
           });
         });
       });
@@ -138,8 +134,36 @@ function Home() {
     }
   };
 
+  const closeSearchBar = () => {
+    setSearchBar({ visible: false, text: '' });
+    setMoviesSearched([]);
+  };
+
   const searchMovies = (e) => {
+    if(!(window.scrollY >= searchArea.current.offsetTop && window.scrollY <= searchArea.current.offsetTop + searchArea.current.getBoundingClientRect().height)) {
+      window.scrollTo(0, searchArea.current.offsetTop - 50);
+    }
+
     setSearchBar({ ...searchBar, text: e.target.value });
+
+    if(e.target.value) {
+      axios.get(`https://api.themoviedb.org/3/search/movie?query=${e.target.value}&api_key=${API_KEY}&language=${LANGUAGE}&region=${REGION}`).then((res) => {
+        let movies = res.data.results.slice(0, 8);
+        console.log(movies);
+
+        movies.forEach((movie, index) => {
+          axios.get(`https://api.themoviedb.org/3/movie/${movie.id}?api_key=${API_KEY}&language=${LANGUAGE}&region=${REGION}`).then((resMovie) => {
+            movies[index] = resMovie.data;
+            movies[index].video = null;
+            setMoviesSearched(movies);
+          });
+        });
+      }).catch((err) => {
+        console.log(err);
+      });
+    } else {
+      setMoviesSearched([]);
+    }
   };
 
   // eslint-disable-next-line
@@ -152,7 +176,7 @@ function Home() {
     return (
       !moviesStreaming.loading && !moviesFiltered.loading ? (
         <>
-          <Header searchMovies = { searchMovies } searchBar = { searchBar } closeSearchBar = { () => setSearchBar({ visible: false, movies: [], text: '' }) } toggleSearchBar = { () => setSearchBar({ ...searchBar, visible: true }) } />
+          <Header searchMovies = { searchMovies } searchBar = { searchBar } closeSearchBar = { closeSearchBar } toggleSearchBar = { () => setSearchBar({ ...searchBar, visible: true }) } />
 
           <YoutubeBackground className = "teste" videoId = { isPlayingTrailer ? currentMovie.video.key : '' } onReady = { (e) => e.target.unMute() } onEnd = { () => nextSlide(false) }>
             <div className = "home-first-block" style = { !isPlayingTrailer ? { background: `linear-gradient(90.07deg, rgba(0, 0, 0, 0.82) 22.31%, rgba(0, 0, 0, 0.11) 89.46%), url(${BASE_IMG_URL + currentMovie.backdrop_path})` } : { background: `linear-gradient(90.07deg, rgba(0, 0, 0, 0.82) 22.31%, rgba(0, 0, 0, 0.11) 89.46%)` }}>
@@ -188,7 +212,7 @@ function Home() {
             </div>
           </YoutubeBackground>
 
-          <div className = "home-second-block" style = {{ background: `url(${require('../../images/background-highlight.svg')}) no-repeat` }}>
+          <div ref = { searchArea } className = "home-second-block" style = {{ background: `url(${require('../../images/background-highlight.svg')}) no-repeat` }}>
             <div className = "home-slide-next-slide noselect">
               <img onClick = { () => nextSlide(false) } className = "home-slide-next-slide-image" src = {`${BASE_IMG_URL}${nextMovie.poster_path}`} alt = "Próximo Filme" />
               <span onClick = { () => nextSlide(false) } className = "home-slide-next-slide-title"> PRÓXIMO </span>
@@ -197,59 +221,11 @@ function Home() {
             </div>
             
             <div className = "home-second-block-responsive">
-              <div className = "home-second-block-title"> Destaques </div>
+              <div className = "home-second-block-title"> { searchBar.visible && moviesSearched.length > 0 ? 'Resultado' : 'Destaques' } </div>
 
-              <div className = "home-highlight-control">
-                <div className = "home-highlight-year">
-                  <div className = "home-highlight-title"> ANO </div>
-
-                  <div className = "home-highlight-dropdown noselect">
-                    <span> { filterYear.value === 0 ? 'De Todos' : filterYear.value } </span>
-                    <img src = {require('../../icons/down.svg')} alt = "dropdown" />
-
-                    <div>
-                      <p onClick = { () => setFilterYear({ ...filterYear, value: 0 }) }> Todos </p>
-                      { filterYear.values.map((year) => (
-                        <p key = { year.format('YYYY') } onClick = { () => setFilterYear({ ...filterYear, value: year.format('YYYY') }) }> { year.format('YYYY') } </p>
-                      )) }
-                    </div>
-                  </div>
-                </div>
-
-                <div className = "home-highlight-order">
-                  <div className = "home-highlight-title"> ORDENAR POR </div>
-
-                  <div className = "home-highlight-dropdown noselect">
-                    <span> { filterOrder.values[filterOrder.value] } </span>
-                    <img src = {require('../../icons/down.svg')} alt = "dropdown" />
-
-                    <div className = "noScroll">
-                      { filterOrder.values.map((order, index) => (
-                        <p key = { order } onClick = { () => setFilterOrder({ ...filterOrder, value: index }) }> { order } </p>
-                      )) }
-                    </div>
-                  </div>
-                </div>
-
-                <div className = "home-highlight-visiblity">
-                  <div className = "home-highlight-title"> VISUALIZAR POR </div>
-
-                  <div className = "home-highlight-dropdown noselect">
-                    <span> { filterVisiblity.values[filterVisiblity.value] } </span>
-                    <img src = {require('../../icons/down.svg')} alt = "dropdown" />
-
-                    <div className = "noScroll">
-                      { filterVisiblity.values.map((visibility, index) => (
-                        <p key = { visibility } onClick = { () => setFilterVisiblity({ ...filterVisiblity, value: index }) }> { visibility } </p>
-                      )) }
-                    </div>
-                  </div>
-                </div>
-              </div>
-            
-              { filterVisiblity.value === 0 ? (
+              { searchBar.visible && moviesSearched.length > 0 ? (
                 <div className = "home-movies-highlighted">
-                  { moviesFilteredSorted.map((movie) => (
+                  { moviesSearched.map((movie) => (
                     <div key = { movie.id } className = "home-movies-highlighted-container">
                       <div className = "home-movies-highlighted-img">
                         <div className = "home-movies-highlighted-img-filter no-select" onClick = { () => setNav(`/movie/${movie.id}`) }>
@@ -281,32 +257,117 @@ function Home() {
                   )) }
                 </div>
               ) : (
-                <div className = "home-movies-highlighted-graph">
-                  <ResponsiveBar
-                    data = { moviesFilteredSorted } colors = {['#FF003C']}
-                    labelTextColor = "#FFF" keys = {['vote_count']}
-                    indexBy = "title" margin = {{ top: 50, bottom: 80, left: 6, right: 4 }}
-                    padding = {0.3} axisLeft = {null}
-                    layout = "horizontal"
-                    axisBottom = {{
-                      tickSize: 5, tickPadding: 5, tickRotation: -41,
-                      legend: 'Votos', legendPosition: 'middle', legendOffset: 50
-                    }}
-                    labelSkipWidth = {12} labelSkipHeight = {12}
-                    legends = {[]} animate = {true} motionStiffness = {90} motionDamping = {15}
-                    tooltip = { d => (
-                      <div className = "home-movies-highlighted-graph-tooltip">
-                        <img src = {`${BASE_IMG_URL}${d.data.poster_path}`} alt = { d.data.title } />
+                <>
+                  <div className = "home-highlight-control">
+                    <div className = "home-highlight-year">
+                      <div className = "home-highlight-title"> ANO </div>
+
+                      <div className = "home-highlight-dropdown noselect">
+                        <span> { filterYear.value === 0 ? 'De Todos' : filterYear.value } </span>
+                        <img src = {require('../../icons/down.svg')} alt = "dropdown" />
 
                         <div>
-                          <p className = "home-movies-highlighted-title"> { d.data.title } ({ d.data.release_date.slice(0, 4) }) </p>
-                          <p className = "home-movies-highlighted-details"> { d.data.runtime }min | { d.data.genres && d.data.genres.length > 0 ? d.data.genres[0].name : '' } </p>
-                          <p className = "home-movies-highlighted-details"> { d.data.vote_count } votos, ({ d.data.vote_average * 10 }%) </p>
+                          <p onClick = { () => setFilterYear({ ...filterYear, value: 0 }) }> Todos </p>
+                          { filterYear.values.map((year) => (
+                            <p key = { year.format('YYYY') } onClick = { () => setFilterYear({ ...filterYear, value: year.format('YYYY') }) }> { year.format('YYYY') } </p>
+                          )) }
                         </div>
                       </div>
-                    )}
-                  />
-                </div>
+                    </div>
+
+                    <div className = "home-highlight-order">
+                      <div className = "home-highlight-title"> ORDENAR POR </div>
+
+                      <div className = "home-highlight-dropdown noselect">
+                        <span> { filterOrder.values[filterOrder.value] } </span>
+                        <img src = {require('../../icons/down.svg')} alt = "dropdown" />
+
+                        <div className = "noScroll">
+                          { filterOrder.values.map((order, index) => (
+                            <p key = { order } onClick = { () => setFilterOrder({ ...filterOrder, value: index }) }> { order } </p>
+                          )) }
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className = "home-highlight-visiblity">
+                      <div className = "home-highlight-title"> VISUALIZAR POR </div>
+
+                      <div className = "home-highlight-dropdown noselect">
+                        <span> { filterVisiblity.values[filterVisiblity.value] } </span>
+                        <img src = {require('../../icons/down.svg')} alt = "dropdown" />
+
+                        <div className = "noScroll">
+                          { filterVisiblity.values.map((visibility, index) => (
+                            <p key = { visibility } onClick = { () => setFilterVisiblity({ ...filterVisiblity, value: index }) }> { visibility } </p>
+                          )) }
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                
+                  { filterVisiblity.value === 0 ? (
+                    <div className = "home-movies-highlighted">
+                      { moviesFilteredSorted.map((movie) => (
+                        <div key = { movie.id } className = "home-movies-highlighted-container">
+                          <div className = "home-movies-highlighted-img">
+                            <div className = "home-movies-highlighted-img-filter no-select" onClick = { () => setNav(`/movie/${movie.id}`) }>
+                              <div className = "home-movies-highlighted-img-filter-see-more">
+                                <img src = {require('../../icons/see-more.svg')} alt = "Ver Mais" />
+                                <p> Ver Mais </p>
+                              </div>
+                            </div>
+
+                            <img src = {`${BASE_IMG_URL}${movie.poster_path}`} alt = { movie.title } />
+                          </div>
+
+                          <div className = "home-movies-highlighted-header">
+                            <div style = {{ width: 40, marginRight: 5, height: '100%', marginTop: 'auto' }}>
+                              <CircularProgressbarWithChildren value = { movie.vote_average * 10 }>
+                                <span className = "home-movies-highlighted-header-rate">
+                                  { movie.vote_average * 10 }
+                                  <span>%</span>
+                                </span>
+                              </CircularProgressbarWithChildren>
+                            </div>
+
+                            <div style = {{ width: 'calc(100% - 45px)' }}>
+                              <p className = "home-movies-highlighted-title"> { movie.title } </p>
+                              <p className = "home-movies-highlighted-details"> { movie.runtime }min | { movie.genres && movie.genres.length > 0 ? movie.genres[0].name : '' } </p>
+                            </div>
+                          </div>
+                        </div>
+                      )) }
+                    </div>
+                  ) : (
+                    <div className = "home-movies-highlighted-graph">
+                      <ResponsiveBar
+                        data = { moviesFilteredSorted } colors = {['#FF003C']}
+                        labelTextColor = "#FFF" keys = {['vote_count']}
+                        indexBy = "title" margin = {{ top: 50, bottom: 80, left: 6, right: 4 }}
+                        padding = {0.3} axisLeft = {null}
+                        layout = "horizontal"
+                        axisBottom = {{
+                          tickSize: 5, tickPadding: 5, tickRotation: -41,
+                          legend: 'Votos', legendPosition: 'middle', legendOffset: 50
+                        }}
+                        labelSkipWidth = {12} labelSkipHeight = {12}
+                        legends = {[]} animate = {true} motionStiffness = {90} motionDamping = {15}
+                        tooltip = { d => (
+                          <div className = "home-movies-highlighted-graph-tooltip">
+                            <img src = {`${BASE_IMG_URL}${d.data.poster_path}`} alt = { d.data.title } />
+
+                            <div>
+                              <p className = "home-movies-highlighted-title"> { d.data.title } ({ d.data.release_date.slice(0, 4) }) </p>
+                              <p className = "home-movies-highlighted-details"> { d.data.runtime }min | { d.data.genres && d.data.genres.length > 0 ? d.data.genres[0].name : '' } </p>
+                              <p className = "home-movies-highlighted-details"> { d.data.vote_count } votos, ({ d.data.vote_average * 10 }%) </p>
+                            </div>
+                          </div>
+                        )}
+                      />
+                    </div>
+                  )}
+                </>                
               )}
             </div>
           </div>

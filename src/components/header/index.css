@@ -8,7 +8,7 @@ header {
   z-index: 999999;
 }
 
-header div {
+header div.header-container {
   height: 50px;
   display: flex;
   justify-content: space-between;
@@ -27,7 +27,7 @@ header.header-scrolled {
   transition-timing-function: ease-out;
 } 
 
-header.header-scrolled div {
+header.header-scrolled div.header-container {
   height: 40px;
   transition: 0.25s;
   transition-timing-function: ease-out;
@@ -46,6 +46,44 @@ header img.header-search-icon {
 }
 
 .header-icon-hideup {
+  display: none;
+}
+
+.header-searchbar-off {
+  width: 0;
+  border: none;
+}
+
+.header-searchbar-on {
+  width: 180px;
+  height: 20px;
+  padding: 5px 27px;
+  border-radius: 50px;
+  outline: none;
+  margin: auto 0;
+  border: none;
+  background-size: 15px !important;
+  background-position-y: center !important;
+  background-position-x: 12px !important;
+  padding-left: 33px;
+  -webkit-transition: width 0.5s;
+  transition: width 0.5s;
+}
+
+.header-searchbar-on img {
+  height: 15px !important;
+  margin: auto 0 !important;
+  margin-top: 2.5px !important;
+}
+
+.header-searchbar-close-on {
+  position: absolute;
+  height: 12px;
+  top: 9px;
+  right: 10px;
+}
+
+.header-searchbar-close-off {
   display: none;
 }
 

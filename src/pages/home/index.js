@@ -17,6 +17,11 @@ const REGION = 'BR';
 
 function Home() {
   const [nav, setNav] = useState('');
+  const [searchBar, setSearchBar] = useState({
+    movies: [],
+    text: '',
+    visible: false
+  });
   const [moviesStreaming, setMoviesStreaming] = useState({
     movies: [],
     loading: true,
@@ -32,7 +37,7 @@ function Home() {
     values: ['Mais Votado', 'Menos Votado']
   });
   const [filterVisiblity, setFilterVisiblity] = useState({
-    value: 1,
+    value: 0,
     values: ['Cards', 'Gráfico']
   });
   const [moviesFiltered, setMoviesFiltered] = useState({
@@ -133,17 +138,21 @@ function Home() {
     }
   };
 
-  const currentMovie = moviesStreaming.movies[moviesStreaming.current];
-  const nextMovie = moviesStreaming.movies[nextSlideIndex()];
+  const searchMovies = (e) => {
+    setSearchBar({ ...searchBar, text: e.target.value });
+  };
+
   // eslint-disable-next-line
   const moviesFilteredSorted = filterOrder.value !== 0 ? moviesFiltered.movies.reduceRight((a, c) => (a.push(c), a), []).slice(0, 6).sort((a, b) => (b.vote_count - a.vote_count)) : moviesFiltered.movies.slice(0, 6).sort((a, b) => (a.vote_count - b.vote_count));
+  const currentMovie = moviesStreaming.movies[moviesStreaming.current];
+  const nextMovie = moviesStreaming.movies[nextSlideIndex()];
 
   if(nav) return (<Redirect to = {nav} />);
   else {
     return (
       !moviesStreaming.loading && !moviesFiltered.loading ? (
         <>
-          <Header />
+          <Header searchMovies = { searchMovies } searchBar = { searchBar } closeSearchBar = { () => setSearchBar({ visible: false, movies: [], text: '' }) } toggleSearchBar = { () => setSearchBar({ ...searchBar, visible: true }) } />
 
           <YoutubeBackground className = "teste" videoId = { isPlayingTrailer ? currentMovie.video.key : '' } onReady = { (e) => e.target.unMute() } onEnd = { () => nextSlide(false) }>
             <div className = "home-first-block" style = { !isPlayingTrailer ? { background: `linear-gradient(90.07deg, rgba(0, 0, 0, 0.82) 22.31%, rgba(0, 0, 0, 0.11) 89.46%), url(${BASE_IMG_URL + currentMovie.backdrop_path})` } : { background: `linear-gradient(90.07deg, rgba(0, 0, 0, 0.82) 22.31%, rgba(0, 0, 0, 0.11) 89.46%)` }}>
@@ -263,7 +272,7 @@ function Home() {
                           </CircularProgressbarWithChildren>
                         </div>
 
-                        <div>
+                        <div style = {{ width: 'calc(100% - 45px)' }}>
                           <p className = "home-movies-highlighted-title"> { movie.title } </p>
                           <p className = "home-movies-highlighted-details"> { movie.runtime }min | { movie.genres && movie.genres.length > 0 ? movie.genres[0].name : '' } </p>
                         </div>
@@ -275,7 +284,7 @@ function Home() {
                 <div className = "home-movies-highlighted-graph">
                   <ResponsiveBar
                     data = { moviesFilteredSorted } colors = {['#FF003C']}
-                    labelTextColor = "#FFF" keys = {['vote_count']} labelSkipWidth = {36} labelSkipHeight = {36}
+                    labelTextColor = "#FFF" keys = {['vote_count']}
                     indexBy = "title" margin = {{ top: 50, bottom: 80, left: 6, right: 4 }}
                     padding = {0.3} axisLeft = {null}
                     layout = "horizontal"

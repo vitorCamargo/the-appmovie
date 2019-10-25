@@ -7,7 +7,7 @@ function Header() {
     window.addEventListener('scroll', handleScroll);
   }, []);
 
-  const handleScroll = (event) => {
+  const handleScroll = () => {
     if(window.scrollY >= 120) {
       document.getElementById('header').classList.remove('header');
       document.getElementById('header').classList.add('header-scrolled');
@@ -25,9 +25,11 @@ function Header() {
 
   return (
     <header id = "header" className = "header noselect">
-      <img src = {require('../../logo.svg')} alt = "Logo" />
-      <img src = {require('../../icons/search-white.svg')} id = "header-search-white" className = "header-search-icon" alt = "Search" />
-      <img src = {require('../../icons/search-black.svg')} id = "header-search-black" className = "header-search-icon header-icon-hideup" alt = "Search" />
+      <div>
+        <img src = {require('../../logo.svg')} alt = "Logo" />
+        <img src = {require('../../icons/search-white.svg')} id = "header-search-white" className = "header-search-icon" alt = "Search" />
+        <img src = {require('../../icons/search-black.svg')} id = "header-search-black" className = "header-search-icon header-icon-hideup" alt = "Search" />
+      </div>
     </header>
   );
 }

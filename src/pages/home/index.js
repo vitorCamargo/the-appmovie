@@ -32,7 +32,7 @@ function Home() {
     values: ['Mais Votado', 'Menos Votado']
   });
   const [filterVisiblity, setFilterVisiblity] = useState({
-    value: 0,
+    value: 1,
     values: ['Cards', 'Gráfico']
   });
   const [moviesFiltered, setMoviesFiltered] = useState({
@@ -136,7 +136,7 @@ function Home() {
   const currentMovie = moviesStreaming.movies[moviesStreaming.current];
   const nextMovie = moviesStreaming.movies[nextSlideIndex()];
   // eslint-disable-next-line
-  const moviesFilteredSorted = filterOrder.value !== 0 ? moviesFiltered.movies.reduceRight((a, c) => (a.push(c), a), []).slice(0, 6) : moviesFiltered.movies.slice(0, 6);
+  const moviesFilteredSorted = filterOrder.value !== 0 ? moviesFiltered.movies.reduceRight((a, c) => (a.push(c), a), []).slice(0, 6).sort((a, b) => (b.vote_count - a.vote_count)) : moviesFiltered.movies.slice(0, 6).sort((a, b) => (a.vote_count - b.vote_count));
 
   if(nav) return (<Redirect to = {nav} />);
   else {
@@ -272,78 +272,33 @@ function Home() {
                   )) }
                 </div>
               ) : (
-                <div style = {{ height: 1000, width: 1000 }}>
-                <ResponsiveBar
-                  data = {moviesFilteredSorted.map(e => { return { title: e.title, vote: 10 * e.vote_average } })}
-                  keys = {[ 'vote' ]}
-                  indexBy = "title"
-                  margin = {{ top: 50, right: 130, bottom: 50, left: 60 }}
-                  padding = {0.3}
-                  maxValue = {100}
-                  layout="horizontal"
-                  colors={{ scheme: 'red_yellow_blue' }}
-                  defs={[
-                      {
-                          id: 'dots',
-                          type: 'patternDots',
-                          background: 'inherit',
-                          color: '#38bcb2',
-                          size: 4,
-                          padding: 1,
-                          stagger: true
-                      },
-                      {
-                          id: 'lines',
-                          type: 'patternLines',
-                          background: 'inherit',
-                          color: '#eed312',
-                          rotation: -45,
-                          lineWidth: 6,
-                          spacing: 10
-                      }
-                  ]}
-                  fill={[
-                      {
-                          match: {
-                              id: 'fries'
-                          },
-                          id: 'dots'
-                      },
-                      {
-                          match: {
-                              id: 'sandwich'
-                          },
-                          id: 'lines'
-                      }
-                  ]}
-                  borderColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
-                  axisTop={null}
-                  axisRight={null}
-                  axisBottom={{
-                      tickSize: 5,
-                      tickPadding: 5,
-                      tickRotation: 0,
-                      legend: 'country',
-                      legendPosition: 'middle',
-                      legendOffset: 32
-                  }}
-                  axisLeft={{
-                      tickSize: 5,
-                      tickPadding: 5,
-                      tickRotation: 0,
-                      legend: 'food',
-                      legendPosition: 'middle',
-                      legendOffset: -40
-                  }}
-                  labelSkipWidth={12}
-                  labelSkipHeight={12}
-                  labelTextColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
-                  legends={[]}
-                  animate={true}
-                  motionStiffness={90}
-                  motionDamping={15}
-                /></div>
-              ) }
+                <div className = "home-movies-highlighted-graph">
+                  <ResponsiveBar
+                    data = { moviesFilteredSorted } colors = {['#FF003C']}
+                    labelTextColor = "#FFF" keys = {['vote_count']} labelSkipWidth = {36} labelSkipHeight = {36}
+                    indexBy = "title" margin = {{ top: 50, bottom: 80, left: 6, right: 4 }}
+                    padding = {0.3} axisLeft = {null}
+                    layout = "horizontal"
+                    axisBottom = {{
+                      tickSize: 5, tickPadding: 5, tickRotation: -41,
+                      legend: 'Votos', legendPosition: 'middle', legendOffset: 50
+                    }}
+                    labelSkipWidth = {12} labelSkipHeight = {12}
+                    legends = {[]} animate = {true} motionStiffness = {90} motionDamping = {15}
+                    tooltip = { d => (
+                      <div className = "home-movies-highlighted-graph-tooltip">
+                        <img src = {`${BASE_IMG_URL}${d.data.poster_path}`} alt = { d.data.title } />
+
+                        <div>
+                          <p className = "home-movies-highlighted-title"> { d.data.title } ({ d.data.release_date.slice(0, 4) }) </p>
+                          <p className = "home-movies-highlighted-details"> { d.data.runtime }min | { d.data.genres && d.data.genres.length > 0 ? d.data.genres[0].name : '' } </p>
+                          <p className = "home-movies-highlighted-details"> { d.data.vote_count } votos, ({ d.data.vote_average * 10 }%) </p>
+                        </div>
+                      </div>
+                    )}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </>

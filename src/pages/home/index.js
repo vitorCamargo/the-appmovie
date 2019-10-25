@@ -86,7 +86,7 @@ function Home() {
 
   useEffect(() => {
     axios.get(`https://api.themoviedb.org/3/movie/top_rated?${filterYear.value === 0 ? '' : 'primary_release_year=' + filterYear.value + '&'}api_key=${API_KEY}&language=${LANGUAGE}&region=${REGION}`).then((res) => {
-      let movies = res.data.results.slice(0, 6).sort((a, b) => (b.vote_count - a.vote_count));
+      let movies = res.data.results.sort((a, b) => (b.vote_count - a.vote_count));
       console.log(movies);
 
       movies.forEach((movie, index) => {
@@ -136,7 +136,7 @@ function Home() {
   const currentMovie = moviesStreaming.movies[moviesStreaming.current];
   const nextMovie = moviesStreaming.movies[nextSlideIndex()];
   // eslint-disable-next-line
-  const moviesFilteredSorted = filterOrder.value !== 0 ? moviesFiltered.movies.reduceRight((a, c) => (a.push(c), a), []) : moviesFiltered.movies;
+  const moviesFilteredSorted = filterOrder.value !== 0 ? moviesFiltered.movies.reduceRight((a, c) => (a.push(c), a), []).slice(0, 6) : moviesFiltered.movies.slice(0, 6);
 
   if(nav) return (<Redirect to = {nav} />);
   else {

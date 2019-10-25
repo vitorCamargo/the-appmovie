@@ -92,7 +92,13 @@ header img.header-search-icon {
   header {
     width: calc(100% - 60px);
     padding: 15px 30px;
-  } 
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .header-searchbar-on {
+    width: 110px;
+  }
 }
 
 .noselect {

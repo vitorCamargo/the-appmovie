@@ -19,12 +19,15 @@ function Home() {
     current: 0
   });
   const [isPlayingTrailer, setIsPlayingTrailer] = useState(false);
-  const [filterYear, setFilterYear] = useState(moment().format("YYYY"));
+  const [filterYear, setFilterYear] = useState({
+    value: moment().format("YYYY"),
+    values: []
+  });
   const [filterOrder, setFilterOrder] = useState({
     value: 0,
     values: ['Mais Votado', 'Menos Votado']
   });
-  const [filterVisuality, setFilterVisuality] = useState({
+  const [filterVisiblity, setFilterVisiblity] = useState({
     value: 0,
     values: ['Cards', 'Gráfico']
   });
@@ -62,6 +65,12 @@ function Home() {
     }).catch((err) => {
       console.log(err);
     });
+
+    let listYears = [];
+    for(let i = 0; i < 20; i++)
+      listYears.push(moment().subtract(1 * i, 'years'));
+
+    setFilterYear({ ...filterYear, values: listYears });
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -145,27 +154,45 @@ function Home() {
               <div className = "home-highlight-year">
                 <div className = "home-highlight-title"> ANO </div>
 
-                <div className = "home-highlight-dropdown">
-                  <span> { filterYear } </span>
+                <div className = "home-highlight-dropdown noselect">
+                  <span> { filterYear.value } </span>
                   <img src = {require('../../icons/down.svg')} />
+
+                  <div>
+                    { filterYear.values.map((year) => (
+                      <p key = { year.format('YYYY') } onClick = { () => setFilterYear({ ...filterYear, value: year.format('YYYY') }) }> { year.format('YYYY') } </p>
+                    )) }
+                  </div>
                 </div>
               </div>
 
               <div className = "home-highlight-order">
                 <div className = "home-highlight-title"> ORDENAR POR </div>
 
-                <div className = "home-highlight-dropdown">
+                <div className = "home-highlight-dropdown noselect">
                   <span> { filterOrder.values[filterOrder.value] } </span>
                   <img src = {require('../../icons/down.svg')} />
+
+                  <div className = "noScroll">
+                    { filterOrder.values.map((order, index) => (
+                      <p key = { order } onClick = { () => setFilterOrder({ ...filterOrder, value: index }) }> { order } </p>
+                    )) }
+                  </div>
                 </div>
               </div>
 
-              <div className = "home-highlight-visuality">
+              <div className = "home-highlight-visiblity">
                 <div className = "home-highlight-title"> VISUALIZAR POR </div>
 
-                <div className = "home-highlight-dropdown">
-                  <span> { filterVisuality.values[filterVisuality.value] } </span>
+                <div className = "home-highlight-dropdown noselect">
+                  <span> { filterVisiblity.values[filterVisiblity.value] } </span>
                   <img src = {require('../../icons/down.svg')} />
+
+                  <div className = "noScroll">
+                    { filterVisiblity.values.map((visibility, index) => (
+                      <p key = { visibility } onClick = { () => setFilterVisiblity({ ...filterVisiblity, value: index }) }> { visibility } </p>
+                    )) }
+                  </div>
                 </div>
               </div>
             </div>

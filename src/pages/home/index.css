@@ -34,11 +34,10 @@
 .home-slide-next-slide {
   height: 200px !important;
   position: absolute;
-  top: -160px;
+  top: -190px;
   width: calc(100% - 100px);
   text-align: end;
   padding: 0 50px;
-  cursor: pointer;
 }
 
 .home-slide-next-slide-image {
@@ -81,10 +80,67 @@
   cursor: pointer;
 }
 
+.home-second-block {
+  margin-top: 30px;
+  height: 1000px;
+  position: relative;
+  padding: 150px 0 0;
+  background-size: 100% !important;
+}
+
+.home-second-block-responsive {
+  padding: 0 60px;
+}
+
+.home-second-block-title {
+  font-weight: 900;
+  font-size: 46px;
+}
+
+.home-highlight-title {
+  font-weight: 600;
+  margin-bottom: 3px;
+  font-size: 14px;
+}
+
+.home-highlight-control {
+  display: flex;
+  justify-content: space-between;
+  width: 450px;
+}
+
+.home-highlight-year, .home-highlight-order, .home-highlight-visuality {
+  width: 120px;
+  margin: 30px 5px 0;
+}
+
+.home-highlight-dropdown {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 900;
+  font-size: 17px;
+  padding: 2px 5px;
+  border-bottom: 0.7px solid #2D2E2E;
+  max-width: 120px;
+  cursor: pointer;
+}
+
+.home-highlight-dropdown img {
+  height: 7px;
+  margin: auto 0;
+}
+
 /** RESPOSIVITY **/
 
 @media only screen and (min-width: 1300px) {
   .home-first-block-responsive {
+    max-width: 1200px !important;
+    left: calc(50% - 600px);
+    height: 100%;
+    position: relative;
+  }
+
+  .home-second-block-responsive {
     max-width: 1200px !important;
     left: calc(50% - 600px);
     height: 100%;
@@ -116,6 +172,10 @@
     width: calc(100% - 160px);
     position: absolute;
     top: 40%;
+  }
+
+  .home-second-block {
+    padding: 100px 0 0;
   }
 }
 
@@ -152,6 +212,25 @@
   .home-first-block {
     padding-top: 100px;
     padding: 0;
+  }
+
+  .home-second-block-responsive {
+    padding: 0 30px;
+  }
+
+  .home-second-block {
+    padding: 60px 0 0;
+  }
+
+  .home-second-block-title {
+    font-size: 34px;
+  }
+
+  .home-highlight-control {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    width: auto;
   }
 }
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import YoutubeBackground from 'react-youtube-background';
 
 import axios from 'axios';
+import moment from 'moment';
 import Header from '../../components/header';
 
 import './index.css';
@@ -18,6 +19,15 @@ function Home() {
     current: 0
   });
   const [isPlayingTrailer, setIsPlayingTrailer] = useState(false);
+  const [filterYear, setFilterYear] = useState(moment().format("YYYY"));
+  const [filterOrder, setFilterOrder] = useState({
+    value: 0,
+    values: ['Mais Votado', 'Menos Votado']
+  });
+  const [filterVisuality, setFilterVisuality] = useState({
+    value: 0,
+    values: ['Cards', 'Gráfico']
+  });
 
   useInterval(() => nextSlide(true), 8000);
 
@@ -120,15 +130,46 @@ function Home() {
           </div>
         </YoutubeBackground>
 
-        <div style = {{ height: 1000, position: 'relative' }}>
+        <div className = "home-second-block" style = {{ background: `url(${require('../../images/background-highlight.svg')}) no-repeat` }}>
           <div className = "home-slide-next-slide noselect">
             <img onClick = { () => nextSlide(false) } className = "home-slide-next-slide-image" src = {`${BASE_IMG_URL}${nextMovie.poster_path}`} alt = "Próximo Filme" />
             <span onClick = { () => nextSlide(false) } className = "home-slide-next-slide-title"> PRÓXIMO </span>
             <span onClick = { () => nextSlide(false) } className = "home-slide-next-slide-name"> { nextMovie.title } </span>
             <img onClick = { () => nextSlide(false) } className = "home-slide-next-slide-icon" src = {require('../../icons/next-slide.svg')} alt = "Próximo Filme" />
           </div>
+          
+          <div className = "home-second-block-responsive">
+            <div className = "home-second-block-title"> Destaques </div>
 
-          kkkkkkkkkkkkkkk
+            <div className = "home-highlight-control">
+              <div className = "home-highlight-year">
+                <div className = "home-highlight-title"> ANO </div>
+
+                <div className = "home-highlight-dropdown">
+                  <span> { filterYear } </span>
+                  <img src = {require('../../icons/down.svg')} />
+                </div>
+              </div>
+
+              <div className = "home-highlight-order">
+                <div className = "home-highlight-title"> ORDENAR POR </div>
+
+                <div className = "home-highlight-dropdown">
+                  <span> { filterOrder.values[filterOrder.value] } </span>
+                  <img src = {require('../../icons/down.svg')} />
+                </div>
+              </div>
+
+              <div className = "home-highlight-visuality">
+                <div className = "home-highlight-title"> VISUALIZAR POR </div>
+
+                <div className = "home-highlight-dropdown">
+                  <span> { filterVisuality.values[filterVisuality.value] } </span>
+                  <img src = {require('../../icons/down.svg')} />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </>
     ) : (

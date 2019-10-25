@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 import './index.css';
 
@@ -40,7 +41,7 @@ function Header(props) {
   return (
     <header id = "header" className = "header noselect">
       <div className = "header-container">
-        <img src = {require('../../logo.svg')} alt = "Logo" />
+        <Link to = "/"><img src = {require('../../logo.svg')} alt = "Logo" /></Link>
 
         <div style = {{ position: 'relative', height: 30, margin: 'auto 0' }}>
           <input value = { searchBar.text } onChange = { searchMovies } id = "header-searchbar-input" style = {{ background: `url(${require('../../icons/search-black.svg')}) no-repeat scroll, #FFF` }} className = { searchBar.visible ? 'header-searchbar-on' : 'header-searchbar-off' } placeholder = "Pesquise Filmes" />

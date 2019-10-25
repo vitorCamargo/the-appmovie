@@ -1,0 +1,18 @@
+.footer-redes-sociais:before {
+  content: "";
+  display: block;
+  width: 80%;
+  position: absolute;
+  left: 50%;
+  margin-left: -40%;
+  height: 1px;
+  background: -o-radial-gradient(center, ellipse, rgba(222, 228, 239, 1) 0, hsla(0, 0%, 100%, 0) 75%);
+  background: radial-gradient(ellipse at center, rgba(222, 228, 239, 1) 0, hsla(0, 0%, 100%, 0) 75%);
+}
+
+.footer-redes-sociais {
+  position: relative;
+  border: 0;
+  display: flex;
+  margin-top: 20px !important;
+}

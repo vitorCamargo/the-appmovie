@@ -450,3 +450,17 @@
   color: #FFFFFF;
   text-shadow: 0px 0px 80px #000000;
 }
+
+.loading {
+  height: 100vh;
+  width: 100%;
+  background-size: 100% !important;
+  background-position: center !important;
+}
+
+.loading > div {
+  margin: auto;
+  position: absolute;
+  top: calc(50% - 75px);
+  left: calc(50% - 75px);
+}

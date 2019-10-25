@@ -3,10 +3,12 @@ import YoutubeBackground from 'react-youtube-background';
 import { Redirect } from 'react-router-dom';
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import { ResponsiveBar } from '@nivo/bar';
+import BounceLoader from 'react-spinners/BounceLoader';
 
 import axios from 'axios';
 import moment from 'moment';
 import Header from '../../components/header';
+import Footer from '../../components/footer';
 
 import './index.css';
 
@@ -371,9 +373,13 @@ function Home() {
               )}
             </div>
           </div>
+          
+          <Footer />
         </>
       ) : (
-        <div />
+        <div class = "loading">
+          <BounceLoader sizeUnit = "px" size = {150} color = "#FF003C" loading = {true} />
+        </div>
       )
     );
   }

@@ -136,6 +136,7 @@
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.14);
   overflow-y: scroll;
   max-height: 150px;
+  z-index: 99999;
 }
 
 .home-highlight-dropdown div.noScroll {
@@ -160,13 +161,111 @@
 }
 
 .home-highlight-dropdown div p:hover {
-  background: #ff003c42;
+  background: #FF003C42;
   padding: 6px 14px;
 }
 
 .home-highlight-dropdown img {
   height: 7px;
   margin: auto 0;
+}
+
+.home-movies-highlighted {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-top: 70px;
+}
+
+.home-movies-highlighted-container {
+  width: 25%;
+  margin-bottom: 50px;
+}
+
+.home-movies-highlighted-img {
+  width: 60%;
+  margin: 0 auto;
+  display: block;
+  position: relative;
+  cursor: pointer;
+}
+
+.home-movies-highlighted-img:hover .home-movies-highlighted-img-filter {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45));
+  display: block;
+}
+
+.home-movies-highlighted-img-filter {
+  display: none;
+  width: 100%;
+  position: absolute;
+  height: calc(100% - 4px);
+}
+
+.home-movies-highlighted-container img {
+  width: 100%;
+  box-shadow: 8px 9px 30px rgba(0, 0, 0, 0.14);
+}
+
+.home-movies-highlighted-container img:hover {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45));
+}
+
+.home-movies-highlighted-container div.home-movies-highlighted-header {
+  width: 80%;
+  margin: 0 auto;
+  display: flex;
+}
+
+.home-movies-highlighted-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.home-movies-highlighted-details {
+  font-weight: 600;
+  margin: 0;
+  font-size: 12px;
+  color: #4F4F4F;
+}
+
+.home-movies-highlighted-img-filter-see-more {
+  position: absolute;
+  left: calc(50% - 50px);
+  width: 100px;
+  top: 30%;
+}
+
+.home-movies-highlighted-img-filter-see-more img {
+  height: 50px;
+  box-shadow: none;
+}
+
+.home-movies-highlighted-img-filter-see-more p {
+  font-weight: bold;
+  font-size: 17px;
+  text-align: center;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.home-movies-highlighted-img-filter-see-more img:hover {
+  background: none;
+}
+
+.home-movies-highlighted-header-rate {
+  font-weight: 600;
+}
+
+.home-movies-highlighted-header-rate span {
+  font-size: 10px;
+  vertical-align: top;
+  font-weight: 800;
+}
+
+.CircularProgressbar .CircularProgressbar-path {
+  stroke: #FF003C !important;
 }
 
 /** RESPOSIVITY **/
@@ -215,6 +314,10 @@
 
   .home-second-block {
     padding: 100px 0 0;
+  }
+
+  .home-movies-highlighted-container {
+    width: 33.333%;
   }
 }
 
@@ -270,6 +373,16 @@
     flex-wrap: wrap;
     justify-content: space-around;
     width: auto;
+  }
+
+  .home-movies-highlighted-container {
+    width: 50%;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .home-movies-highlighted-container {
+    width: 100%;
   }
 }
 

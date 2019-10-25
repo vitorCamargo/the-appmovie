@@ -315,9 +315,9 @@
 }
 
 @media only screen and (max-width: 1200px) {
-  .home-slide-header-title {
+  /* .home-slide-header-title {
     font-size: 62px !important;
-  }
+  } */
 }
 
 @media only screen and (max-width: 992px) {

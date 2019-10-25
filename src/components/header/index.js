@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 
 import './index.css';
 
-function Header(props) {
-  const { searchBar, toggleSearchBar, searchMovies, closeSearchBar } = props;
+const Header = props => {
+  const { searchBar, toggleSearchBar, searchMovies, closeSearchBar, hasSearchBar } = props;
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
@@ -12,16 +12,20 @@ function Header(props) {
 
   const handleScroll = () => {
     if(window.scrollY >= 120) {
-      document.getElementById('header').classList.remove('header');
-      document.getElementById('header').classList.add('header-scrolled');
+      if(document.getElementById('header')) {
+        document.getElementById('header').classList.remove('header');
+        document.getElementById('header').classList.add('header-scrolled');
+      }
 
       if(document.getElementById('header-search-white') && document.getElementById('header-search-black')) {
         document.getElementById('header-search-white').classList.add('header-icon-hideup');
         document.getElementById('header-search-black').classList.remove('header-icon-hideup');
       }
     } else {
-      document.getElementById('header').classList.add('header');
-      document.getElementById('header').classList.remove('header-scrolled');
+      if(document.getElementById('header')) {
+        document.getElementById('header').classList.add('header');
+        document.getElementById('header').classList.remove('header-scrolled');
+      }
 
       if(document.getElementById('header-search-white') && document.getElementById('header-search-black')) {
         document.getElementById('header-search-white').classList.remove('header-icon-hideup');
@@ -43,17 +47,21 @@ function Header(props) {
       <div className = "header-container">
         <Link to = "/"><img src = {require('../../logo.svg')} alt = "Logo" /></Link>
 
-        <div style = {{ position: 'relative', height: 30, margin: 'auto 0' }}>
-          <input value = { searchBar.text } onChange = { searchMovies } id = "header-searchbar-input" style = {{ background: `url(${require('../../icons/search-black.svg')}) no-repeat scroll, #FFF` }} className = { searchBar.visible ? 'header-searchbar-on' : 'header-searchbar-off' } placeholder = "Pesquise Filmes" />
-          <img onClick = { closeSearchBar } src = {require('../../icons/close.svg')} className = { searchBar.visible ? 'header-searchbar-close-on' : 'header-searchbar-close-off' } alt = "Fechar Pesquisa" />
-        </div>
-
-        { !searchBar.visible ? (
+        { hasSearchBar ? (
           <>
-            <img onClick = { openSearchBar } src = {require('../../icons/search-white.svg')} id = "header-search-white" className = "header-search-icon" alt = "Search" />
-            <img onClick = { openSearchBar } src = {require('../../icons/search-black.svg')} id = "header-search-black" className = "header-search-icon header-icon-hideup" alt = "Search" />
+            <div style = {{ position: 'relative', height: 30, margin: 'auto 0' }}>
+              <input value = { searchBar.text } onChange = { searchMovies } id = "header-searchbar-input" style = {{ background: `url(${require('../../icons/search-black.svg')}) no-repeat scroll, #FFF` }} className = { searchBar.visible ? 'header-searchbar-on' : 'header-searchbar-off' } placeholder = "Pesquise Filmes" />
+              <img onClick = { closeSearchBar } src = {require('../../icons/close.svg')} className = { searchBar.visible ? 'header-searchbar-close-on' : 'header-searchbar-close-off' } alt = "Fechar Pesquisa" />
+            </div>
+
+            { !searchBar.visible ? (
+              <>
+                <img onClick = { openSearchBar } src = {require('../../icons/search-white.svg')} id = "header-search-white" className = "header-search-icon" alt = "Search" />
+                <img onClick = { openSearchBar } src = {require('../../icons/search-black.svg')} id = "header-search-black" className = "header-search-icon header-icon-hideup" alt = "Search" />
+              </>
+            ) : null }
           </>
-        ) : null }
+        ) : (<div />) }
       </div>
     </header>
   );

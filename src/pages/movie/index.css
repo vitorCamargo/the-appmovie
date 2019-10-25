@@ -1,0 +1,7 @@
+div.home-slide-next-slide.special-slide {
+  height: 300px !important;
+}
+
+div.home-slide-next-slide.special-slide img.home-slide-next-slide-image {
+  cursor: auto !important;
+}

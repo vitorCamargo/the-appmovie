@@ -12,12 +12,9 @@ import Footer from '../../components/footer';
 
 import './index.css';
 
-const BASE_IMG_URL = 'https://image.tmdb.org/t/p/original/';
-const API_KEY = '6f228a124b52956ac305a349079b7f2b';
-const LANGUAGE = 'pt-BR';
-const REGION = 'BR';
+import { BASE_IMG_URL, API_KEY, LANGUAGE, REGION } from '../../consts';
 
-function Home() {
+const Home = () => {
   const searchArea = React.createRef();
 
   const [nav, setNav] = useState('');
@@ -95,7 +92,7 @@ function Home() {
 
   useEffect(() => {
     axios.get(`https://api.themoviedb.org/3/movie/top_rated?${filterYear.value === 0 ? '' : 'primary_release_year=' + filterYear.value + '&'}api_key=${API_KEY}&language=${LANGUAGE}&region=${REGION}`).then((res) => {
-      let movies = res.data.results.sort((a, b) => (b.vote_count - a.vote_count));
+      let movies = res.data.results.filter(f => f.poster_path && f.backdrop_path).sort((a, b) => (b.vote_count - a.vote_count));
 
       movies.forEach((movie, index) => {
         axios.get(`https://api.themoviedb.org/3/movie/${movie.id}?api_key=${API_KEY}&language=${LANGUAGE}&region=${REGION}`).then((resMovie) => {
@@ -150,8 +147,7 @@ function Home() {
 
     if(e.target.value) {
       axios.get(`https://api.themoviedb.org/3/search/movie?query=${e.target.value}&api_key=${API_KEY}&language=${LANGUAGE}&region=${REGION}`).then((res) => {
-        let movies = res.data.results.slice(0, 8);
-        console.log(movies);
+        let movies = res.data.results.filter(f => f.poster_path && f.backdrop_path).slice(0, 8);
 
         movies.forEach((movie, index) => {
           axios.get(`https://api.themoviedb.org/3/movie/${movie.id}?api_key=${API_KEY}&language=${LANGUAGE}&region=${REGION}`).then((resMovie) => {
@@ -178,7 +174,7 @@ function Home() {
     return (
       !moviesStreaming.loading && !moviesFiltered.loading ? (
         <>
-          <Header searchMovies = { searchMovies } searchBar = { searchBar } closeSearchBar = { closeSearchBar } toggleSearchBar = { () => setSearchBar({ ...searchBar, visible: true }) } />
+          <Header hasSearchBar searchMovies = { searchMovies } searchBar = { searchBar } closeSearchBar = { closeSearchBar } toggleSearchBar = { () => setSearchBar({ ...searchBar, visible: true }) } />
 
           <YoutubeBackground className = "teste" videoId = { isPlayingTrailer ? currentMovie.video.key : '' } onReady = { (e) => e.target.unMute() } onEnd = { () => nextSlide(false) }>
             <div className = "home-first-block" style = { !isPlayingTrailer ? { background: `linear-gradient(90.07deg, rgba(0, 0, 0, 0.82) 22.31%, rgba(0, 0, 0, 0.11) 89.46%), url(${BASE_IMG_URL + currentMovie.backdrop_path})` } : { background: `linear-gradient(90.07deg, rgba(0, 0, 0, 0.82) 22.31%, rgba(0, 0, 0, 0.11) 89.46%)` }}>
@@ -202,7 +198,7 @@ function Home() {
                     </div>
                   </div>
 
-                  <div className = "home-slide-header-title"> { currentMovie.title } </div>
+                  <div style = {{ fontSize: `${Math.floor(currentMovie.title.length >= 30 ? currentMovie.title.length/8 : 5)}vw` }} className = "home-slide-header-title"> { currentMovie.title } </div>
                 </div>
                 
                 <div className = "home-slide-player noselect">
@@ -373,11 +369,11 @@ function Home() {
               )}
             </div>
           </div>
-          
+
           <Footer />
         </>
       ) : (
-        <div class = "loading">
+        <div className = "loading">
           <BounceLoader sizeUnit = "px" size = {150} color = "#FF003C" loading = {true} />
         </div>
       )

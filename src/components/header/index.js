@@ -11,7 +11,7 @@ const Header = props => {
   }, []);
 
   const handleScroll = () => {
-    if(window.scrollY >= 120) {
+    if(window.scrollY >= 120 && hasSearchBar) {
       if(document.getElementById('header')) {
         document.getElementById('header').classList.remove('header');
         document.getElementById('header').classList.add('header-scrolled');
@@ -43,7 +43,7 @@ const Header = props => {
   }
 
   return (
-    <header id = "header" className = "header noselect">
+    <header style = { !hasSearchBar ? { position: 'absolute' } : {} } id = "header" className = "header noselect">
       <div className = "header-container">
         <Link to = "/"><img src = {require('../../logo.svg')} alt = "Logo" /></Link>
 

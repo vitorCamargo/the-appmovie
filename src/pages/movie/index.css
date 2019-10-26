@@ -5,3 +5,77 @@ div.home-slide-next-slide.special-slide {
 div.home-slide-next-slide.special-slide img.home-slide-next-slide-image {
   cursor: auto !important;
 }
+
+.movie-cast {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-top: 50px;
+}
+
+.movie-cast > div {
+  height: auto;
+  width: 50%;
+  margin-bottom: 20px;
+  display: flex;
+}
+
+.movie-cast > div img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 50%;
+  box-shadow: 8px 9px 30px rgba(0, 0, 0, 0.14);
+  margin-right: 15px;
+}
+
+.movie-cast-name {
+  font-style: italic;
+}
+
+.movie-cast-character {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.movie-details-subtitle {
+  margin: 0;
+  color: #4F4F4F;
+  font-weight: 700;
+}
+
+.movie-details-text {
+  margin: 0;
+  margin-top: 10px;
+}
+
+.movie-financial, .movie-time {
+  display: flex;
+  margin-top: 20px;
+}
+
+.movie-details-text span.money-symbol {
+  font-size: 24px;
+}
+
+.movie-details-text span.money, span.time, p.release {
+  font-size: 23px;
+}
+
+@media only screen and (max-width: 620px) {
+  .movie-cast > div {
+    width: 100%;
+  }
+
+  .home-second-block-responsive.special-movie {
+    margin-top: 60px;
+  }
+
+  .movie-financial {
+    display: block;
+  }
+
+  .movie-financial div {
+    margin-bottom: 20px;
+  }
+}

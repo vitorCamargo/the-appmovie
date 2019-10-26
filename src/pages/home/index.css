@@ -4,6 +4,7 @@
   background-size: cover !important;
   padding-top: 100px;
   padding: 0 80px;
+  min-height: 640px;
 }
 
 .home-first-block iframe {

@@ -29,8 +29,6 @@ const Movie = props => {
       res.cast = [];
       res.video = null;
 
-      console.log(res);
-
       axios.get(`https://api.themoviedb.org/3/movie/${id}/videos?type='Trailer'&api_key=${API_KEY}&language=${LANGUAGE}&region=${REGION}`).then((resVideo) => {
         res.video = resVideo.data.results.length > 0 ? resVideo.data.results[0] : null;
         setMovie({
@@ -49,7 +47,7 @@ const Movie = props => {
         });
       });
     }).catch((err) => {
-      console.log(err);
+      setNav('/');
     });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
